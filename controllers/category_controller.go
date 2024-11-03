@@ -11,6 +11,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// GetCategories godoc
+// @Summary Retrieve all categories
+// @Description Get a list of all categories
+// @Tags Categories
+// @Produce json
+// @Success 200 {object} []responses.CategoryResponse
+// @Failure 500 {object} responses.ErrorResponse "Could not retrieve categories"
+// @Router /categories [get]
 func GetCategories(c *gin.Context) {
 	var categories []models.Category
 	if err := database.DB.Find(&categories).Error; err != nil {
@@ -27,14 +35,22 @@ func GetCategories(c *gin.Context) {
 	}
 
 	utils.CreateResponse(c, http.StatusOK, "Categories retrieved successfully.", responseCategories)
-
 }
 
+// GetCategory godoc
+// @Summary Retrieve a single category
+// @Description Get a category by its ID
+// @Tags Categories
+// @Produce json
+// @Param category_id path int true "Category ID"
+// @Success 200 {object} responses.CategoryResponse
+// @Failure 404 {object} responses.ErrorResponse "Category not found"
+// @Router /categories/{category_id} [get]
 func GetCategory(c *gin.Context) {
-	category_id := c.Param("category_id")
+	categoryID := c.Param("category_id")
 
 	var category models.Category
-	if err := database.DB.Where("id = ?", category_id).First(&category).Error; err != nil {
+	if err := database.DB.Where("id = ?", categoryID).First(&category).Error; err != nil {
 		utils.CreateResponse(c, http.StatusNotFound, "Category not found", nil)
 		return
 	}
@@ -45,9 +61,20 @@ func GetCategory(c *gin.Context) {
 	}
 
 	utils.CreateResponse(c, http.StatusOK, "Category retrieved successfully", response)
-
 }
 
+// CreateCategory godoc
+// @Summary Create a new category
+// @Description Create a new category with a given name
+// @Tags Categories
+// @Accept json
+// @Produce json
+// @Param category body requests.CreateCategoryRequest true "Category information"
+// @Success 200 {object} responses.CategoryResponse
+// @Failure 400 {object} responses.ErrorResponse "Invalid input"
+// @Failure 401 {object} responses.ErrorResponse "Unauthorized"
+// @Failure 500 {object} responses.ErrorResponse "Could not create category"
+// @Router /categories [post]
 func CreateCategory(c *gin.Context) {
 	user, exists := c.Get("user")
 	if !exists {
@@ -71,6 +98,7 @@ func CreateCategory(c *gin.Context) {
 		return
 	}
 	response := responses.CategoryResponse{
+		ID:   category.ID,
 		Name: category.Name,
 	}
 	utils.CreateResponse(c, http.StatusOK, "Category created successfully", response)

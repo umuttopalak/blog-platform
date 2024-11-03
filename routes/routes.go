@@ -58,5 +58,15 @@ func SetupRouter() *gin.Engine {
 		categoryRoutes.GET("/:category_id", controllers.GetCategory)
 	}
 
+	adminRoutes := router.Group("/admin")
+	adminRoutes.Use(middleware.AuthMiddleware())
+	adminRoutes.Use(middleware.RequireRole("Admin"))
+	{
+		adminRoutes.POST("/role/add", controllers.AddRoleToUser)
+		adminRoutes.POST("/role/create", controllers.CreateRole)
+		adminRoutes.DELETE("/role/remove/:role_id", controllers.RemoveRole)
+		adminRoutes.POST("/role/remove-from-user", controllers.RemoveRoleFromUser)
+	}
+
 	return router
 }

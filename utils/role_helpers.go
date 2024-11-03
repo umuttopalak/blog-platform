@@ -1,6 +1,8 @@
 package utils
 
-import "blog-platform/models"
+import (
+	"blog-platform/models"
+)
 
 func HasRole(user models.User, roleName string) bool {
 	for _, role := range user.Roles {

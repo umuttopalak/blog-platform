@@ -3,6 +3,7 @@ package main
 import (
 	"blog-platform/database"
 	"blog-platform/routes"
+	"blog-platform/utils"
 	"log"
 
 	"github.com/joho/godotenv"
@@ -14,6 +15,8 @@ func main() {
 		log.Println("No .env file found")
 	}
 	database.InitDatabase()
+
+	utils.SeedRoles(database.DB)
 
 	router := routes.SetupRouter()
 

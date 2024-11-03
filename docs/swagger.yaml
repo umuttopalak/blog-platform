@@ -1,0 +1,685 @@
+definitions:
+  requests.CreateCommentRequest:
+    properties:
+      content:
+        type: string
+    required:
+    - content
+    type: object
+  requests.CreatePostRequest:
+    properties:
+      content:
+        type: string
+      title:
+        type: string
+    required:
+    - content
+    - title
+    type: object
+  requests.CreateReactionRequest:
+    properties:
+      comment_id:
+        description: Sadece comment için
+        type: integer
+      post_id:
+        description: Sadece post için
+        type: integer
+      type:
+        enum:
+        - like
+        - dislike
+        type: string
+    required:
+    - type
+    type: object
+  requests.UpdateCommentRequest:
+    properties:
+      content:
+        type: string
+    required:
+    - content
+    type: object
+  requests.UpdatePostRequest:
+    properties:
+      content:
+        type: string
+      title:
+        type: string
+    required:
+    - content
+    - title
+    type: object
+  requests.UserLoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  requests.UserRegisterRequest:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - first_name
+    - last_name
+    - password
+    - username
+    type: object
+  responses.CommentResponse:
+    properties:
+      author_id:
+        type: string
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      post_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  responses.CommentsResponse:
+    properties:
+      comments:
+        items:
+          $ref: '#/definitions/responses.CommentResponse'
+        type: array
+    type: object
+  responses.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  responses.LoginResponse:
+    properties:
+      message:
+        type: string
+      token:
+        type: string
+    type: object
+  responses.MessageResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  responses.PostResponse:
+    properties:
+      author_id:
+        type: string
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  responses.PostsResponse:
+    properties:
+      posts:
+        items:
+          $ref: '#/definitions/responses.PostResponse'
+        type: array
+    type: object
+  responses.ReactionResponse:
+    properties:
+      comment_id:
+        type: integer
+      created_at:
+        type: string
+      id:
+        type: integer
+      post_id:
+        type: integer
+      type:
+        type: string
+      user_id:
+        type: string
+    type: object
+  responses.ReactionsResponse:
+    properties:
+      reactions:
+        items:
+          $ref: '#/definitions/responses.ReactionResponse'
+        type: array
+    type: object
+  responses.RegisterResponse:
+    properties:
+      message:
+        type: string
+      user:
+        $ref: '#/definitions/responses.UserResponse'
+    type: object
+  responses.UserResponse:
+    properties:
+      email:
+        description: Boş ise gösterilmez
+        type: string
+      id:
+        type: string
+      username:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /comments/{comment_id}:
+    delete:
+      description: Belirli bir yorumu siler
+      parameters:
+      - description: Comment ID
+        in: path
+        name: comment_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Yorum başarıyla silindi
+          schema:
+            $ref: '#/definitions/responses.MessageResponse'
+        "400":
+          description: Geçersiz veri
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "401":
+          description: Yetkisiz
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "403":
+          description: Erişim reddedildi
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "404":
+          description: Yorum bulunamadı
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Sunucu hatası
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Mevcut bir yorumu sil
+      tags:
+      - Comment
+    put:
+      consumes:
+      - application/json
+      description: Belirli bir yorumu günceller
+      parameters:
+      - description: Comment ID
+        in: path
+        name: comment_id
+        required: true
+        type: integer
+      - description: Yorum bilgisi
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/requests.UpdateCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.CommentResponse'
+        "400":
+          description: Geçersiz veri
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "401":
+          description: Yetkisiz
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "403":
+          description: Erişim reddedildi
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "404":
+          description: Yorum bulunamadı
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Sunucu hatası
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Mevcut bir yorumu güncelle
+      tags:
+      - Comment
+  /comments/{post_id}:
+    post:
+      consumes:
+      - application/json
+      description: Belirli bir posta yeni bir yorum ekler
+      parameters:
+      - description: Post ID
+        in: path
+        name: post_id
+        required: true
+        type: integer
+      - description: Yorum bilgisi
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/requests.CreateCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.CommentResponse'
+        "400":
+          description: Geçersiz veri
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "401":
+          description: Yetkisiz
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Sunucu hatası
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Yeni bir yorum oluştur
+      tags:
+      - Comment
+  /comments/post/{post_id}:
+    get:
+      description: Post ID'ye göre yorumları getirir
+      parameters:
+      - description: Post ID
+        in: path
+        name: post_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.CommentsResponse'
+        "404":
+          description: Post bulunamadı
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Sunucu hatası
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Belirli bir posta ait yorumları getir
+      tags:
+      - Comment
+  /comments/user:
+    get:
+      description: Giriş yapmış kullanıcıya ait tüm yorumları getirir
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.CommentsResponse'
+        "401":
+          description: Yetkisiz
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Sunucu hatası
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Kullanıcıya ait yorumları getir
+      tags:
+      - Comment
+  /posts:
+    get:
+      description: Tüm postları listeler
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.PostsResponse'
+        "500":
+          description: Sunucu hatası
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Tüm postları getir
+      tags:
+      - Post
+    post:
+      consumes:
+      - application/json
+      description: Yeni bir post oluşturur
+      parameters:
+      - description: Post bilgisi
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/requests.CreatePostRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.PostResponse'
+        "400":
+          description: Geçersiz veri
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Sunucu hatası
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Yeni bir post oluştur
+      tags:
+      - Post
+  /posts/{post_id}:
+    delete:
+      description: ID ile mevcut bir postu siler
+      parameters:
+      - description: Post ID
+        in: path
+        name: post_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Silme işlemi başarılı
+          schema:
+            $ref: '#/definitions/responses.MessageResponse'
+        "400":
+          description: Geçersiz veri
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "403":
+          description: Yetkisiz erişim
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "404":
+          description: Post bulunamadı
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Sunucu hatası
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Mevcut bir postu sil
+      tags:
+      - Post
+    get:
+      description: ID ile tek bir postu getirir
+      parameters:
+      - description: Post ID
+        in: path
+        name: post_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.PostResponse'
+        "404":
+          description: Post bulunamadı
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Belirli bir postu getir
+      tags:
+      - Post
+    put:
+      consumes:
+      - application/json
+      description: ID ile mevcut bir postu günceller
+      parameters:
+      - description: Post ID
+        in: path
+        name: post_id
+        required: true
+        type: integer
+      - description: Güncellenecek post bilgisi
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/requests.UpdatePostRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.PostResponse'
+        "400":
+          description: Geçersiz veri
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "403":
+          description: Yetkisiz erişim
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "404":
+          description: Post bulunamadı
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Sunucu hatası
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Mevcut bir postu güncelle
+      tags:
+      - Post
+  /reactions:
+    post:
+      consumes:
+      - application/json
+      description: Bir post veya yoruma reaction (like veya dislike) ekler
+      parameters:
+      - description: Reaction bilgisi
+        in: body
+        name: reaction
+        required: true
+        schema:
+          $ref: '#/definitions/requests.CreateReactionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.ReactionResponse'
+        "400":
+          description: Geçersiz veri
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "401":
+          description: Yetkisiz
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Sunucu hatası
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Yeni bir reaction ekle
+      tags:
+      - Reaction
+  /reactions/{reaction_id}:
+    delete:
+      description: Belirli bir reaction'ı (like veya dislike) siler
+      parameters:
+      - description: Reaction ID
+        in: path
+        name: reaction_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Reaction silindi
+          schema:
+            $ref: '#/definitions/responses.MessageResponse'
+        "400":
+          description: Geçersiz veri
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "401":
+          description: Yetkisiz
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "403":
+          description: Erişim reddedildi
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Sunucu hatası
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Bir reaction'ı sil
+      tags:
+      - Reaction
+  /reactions/comment/{comment_id}:
+    get:
+      description: Belirli bir yoruma ait reaction'ları (like/dislike) listele
+      parameters:
+      - description: Comment ID
+        in: path
+        name: comment_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.ReactionsResponse'
+        "400":
+          description: Geçersiz veri
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Sunucu hatası
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Belirli bir yoruma ait tüm reaction'ları getir
+      tags:
+      - Reaction
+  /reactions/post/{post_id}:
+    get:
+      description: Belirli bir posta ait reaction'ları (like/dislike) listele
+      parameters:
+      - description: Post ID
+        in: path
+        name: post_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.ReactionsResponse'
+        "400":
+          description: Geçersiz veri
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Sunucu hatası
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Belirli bir posta ait tüm reaction'ları getir
+      tags:
+      - Reaction
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Kullanıcı email ve şifre ile giriş yapar
+      parameters:
+      - description: Giriş bilgileri
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/requests.UserLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.LoginResponse'
+        "400":
+          description: Geçersiz veri
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "401":
+          description: Yetkisiz
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Kullanıcı girişi
+      tags:
+      - User
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      description: Yeni bir kullanıcı kaydı oluşturur
+      parameters:
+      - description: Kayıt bilgileri
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/requests.UserRegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.RegisterResponse'
+        "400":
+          description: Geçersiz veri
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Sunucu hatası
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Yeni kullanıcı kaydı
+      tags:
+      - User
+swagger: "2.0"

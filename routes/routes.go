@@ -50,5 +50,13 @@ func SetupRouter() *gin.Engine {
 		reactionRoutes.DELETE("/:reaction_id", controllers.RemoveReaction)
 	}
 
+	categoryRoutes := router.Group("/category")
+	categoryRoutes.Use(middleware.AuthMiddleware())
+	{
+		categoryRoutes.GET("/", controllers.GetCategories)
+		categoryRoutes.POST("/", controllers.CreateCategory)
+		categoryRoutes.GET("/:category_id", controllers.GetCategory)
+	}
+
 	return router
 }

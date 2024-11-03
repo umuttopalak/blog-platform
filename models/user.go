@@ -5,12 +5,13 @@ import (
 )
 
 type User struct {
-	ID        uuid.UUID `gorm:"type:uuid;primaryKey"`
-	FirstName string    `json:"first_name"`
-	LastName  string    `json:"last_name"`
-	Username  string    `json:"username"`
-	Email     string    `json:"email"`
-	Password  string    `json:"password"`
-	Posts     []Post    `gorm:"foreignKey:AuthorID"`
-	Comments  []Comment `gorm:"foreignKey:AuthorID"`
+	ID        uuid.UUID  `gorm:"type:uuid;primaryKey" json:"id"`
+	FirstName string     `json:"first_name,omitempty"` // JSON çıktısında gösterilir
+	LastName  string     `json:"last_name,omitempty"`  // JSON çıktısında gösterilir
+	Username  string     `json:"username"`
+	Email     string     `json:"-"` // JSON çıktısında gizlenir
+	Password  string     `json:"-"` // JSON çıktısında gizlenir
+	Posts     []Post     `gorm:"foreignKey:AuthorID" json:"-"`
+	Comments  []Comment  `gorm:"foreignKey:AuthorID" json:"-"`
+	Reactions []Reaction `gorm:"foreignKey:UserID" json:"-"`
 }

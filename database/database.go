@@ -18,7 +18,7 @@ func InitDatabase() {
 	dbType := os.Getenv("DB_TYPE")
 	switch dbType {
 	case "postgres":
-		dsn := "host=localhost user=postgres password=yourpassword dbname=yourdbname port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+		dsn := os.Getenv("DATABASE_URL")
 		DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	default:
 		DB, err = gorm.Open(sqlite.Open("test.db"), &gorm.Config{})

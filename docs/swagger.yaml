@@ -235,7 +235,134 @@ definitions:
 info:
   contact: {}
 paths:
-  /categories:
+  /admin/role/add:
+    post:
+      consumes:
+      - application/json
+      description: Add a role to a specific user by user ID and role ID
+      parameters:
+      - description: Add role to user
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/requests.AddRoleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Role added successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "404":
+          description: User or role not found
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Assign a role to a user
+      tags:
+      - Roles
+  /admin/role/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a role with a given name and description
+      parameters:
+      - description: Role information
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/requests.CreateRoleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.RoleResponse'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "502":
+          description: Database error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Create a new role
+      tags:
+      - Roles
+  /admin/role/remove-from-user:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a role from a specific user by user ID and role ID
+      parameters:
+      - description: Remove role from user
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/requests.RemoveRoleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Role removed successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "404":
+          description: User or role not found
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Remove a role from a user
+      tags:
+      - Roles
+  /admin/role/remove/{role_id}:
+    delete:
+      description: Delete a role by its ID
+      parameters:
+      - description: Role ID
+        in: path
+        name: role_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Role deleted successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid role ID
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "404":
+          description: Role not found
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Remove an existing role
+      tags:
+      - Roles
+  /category:
     get:
       description: Get a list of all categories
       produces:
@@ -287,7 +414,7 @@ paths:
       summary: Create a new category
       tags:
       - Categories
-  /categories/{category_id}:
+  /category/{category_id}:
     get:
       description: Get a category by its ID
       parameters:
@@ -750,65 +877,6 @@ paths:
       summary: Belirli bir posta ait tüm reaction'ları getir
       tags:
       - Reaction
-  /roles:
-    post:
-      consumes:
-      - application/json
-      description: Create a role with a given name and description
-      parameters:
-      - description: Role information
-        in: body
-        name: role
-        required: true
-        schema:
-          $ref: '#/definitions/requests.CreateRoleRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/responses.RoleResponse'
-        "400":
-          description: Invalid input
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-        "502":
-          description: Database error
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-      summary: Create a new role
-      tags:
-      - Roles
-  /roles/{role_id}:
-    delete:
-      description: Delete a role by its ID
-      parameters:
-      - description: Role ID
-        in: path
-        name: role_id
-        required: true
-        type: integer
-      responses:
-        "200":
-          description: Role deleted successfully
-          schema:
-            type: string
-        "400":
-          description: Invalid role ID
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-        "404":
-          description: Role not found
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-      summary: Remove an existing role
-      tags:
-      - Roles
   /users/login:
     post:
       consumes:
@@ -869,71 +937,4 @@ paths:
       summary: Yeni kullanıcı kaydı
       tags:
       - User
-  /users/roles:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a role from a specific user by user ID and role ID
-      parameters:
-      - description: Remove role from user
-        in: body
-        name: role
-        required: true
-        schema:
-          $ref: '#/definitions/requests.RemoveRoleRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Role removed successfully
-          schema:
-            type: string
-        "400":
-          description: Invalid input
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-        "404":
-          description: User or role not found
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-      summary: Remove a role from a user
-      tags:
-      - Roles
-    post:
-      consumes:
-      - application/json
-      description: Add a role to a specific user by user ID and role ID
-      parameters:
-      - description: Add role to user
-        in: body
-        name: role
-        required: true
-        schema:
-          $ref: '#/definitions/requests.AddRoleRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Role added successfully
-          schema:
-            type: string
-        "400":
-          description: Invalid input
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-        "404":
-          description: User or role not found
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-      summary: Assign a role to a user
-      tags:
-      - Roles
 swagger: "2.0"

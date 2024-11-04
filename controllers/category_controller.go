@@ -18,7 +18,7 @@ import (
 // @Produce json
 // @Success 200 {object} []responses.CategoryResponse
 // @Failure 500 {object} responses.ErrorResponse "Could not retrieve categories"
-// @Router /categories [get]
+// @Router /category [get]
 func GetCategories(c *gin.Context) {
 	var categories []models.Category
 	if err := database.DB.Find(&categories).Error; err != nil {
@@ -45,7 +45,7 @@ func GetCategories(c *gin.Context) {
 // @Param category_id path int true "Category ID"
 // @Success 200 {object} responses.CategoryResponse
 // @Failure 404 {object} responses.ErrorResponse "Category not found"
-// @Router /categories/{category_id} [get]
+// @Router /category/{category_id} [get]
 func GetCategory(c *gin.Context) {
 	categoryID := c.Param("category_id")
 
@@ -74,7 +74,7 @@ func GetCategory(c *gin.Context) {
 // @Failure 400 {object} responses.ErrorResponse "Invalid input"
 // @Failure 401 {object} responses.ErrorResponse "Unauthorized"
 // @Failure 500 {object} responses.ErrorResponse "Could not create category"
-// @Router /categories [post]
+// @Router /category [post]
 func CreateCategory(c *gin.Context) {
 	user, exists := c.Get("user")
 	if !exists {

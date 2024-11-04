@@ -23,7 +23,7 @@ import (
 // @Success 200 {object} responses.RoleResponse
 // @Failure 400 {object} responses.ErrorResponse "Invalid input"
 // @Failure 502 {object} responses.ErrorResponse "Database error"
-// @Router /roles [post]
+// @Router /admin/role/create [post]
 func CreateRole(c *gin.Context) {
 	var input requests.CreateRoleRequest
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -59,7 +59,7 @@ func CreateRole(c *gin.Context) {
 // @Failure 400 {object} responses.ErrorResponse "Invalid role ID"
 // @Failure 404 {object} responses.ErrorResponse "Role not found"
 // @Failure 500 {object} responses.ErrorResponse "Internal server error"
-// @Router /roles/{role_id} [delete]
+// @Router /admin/role/remove/{role_id} [delete]
 func RemoveRole(c *gin.Context) {
 	roleID, err := strconv.Atoi(c.Param("role_id"))
 	if err != nil {
@@ -92,7 +92,7 @@ func RemoveRole(c *gin.Context) {
 // @Failure 400 {object} responses.ErrorResponse "Invalid input"
 // @Failure 404 {object} responses.ErrorResponse "User or role not found"
 // @Failure 500 {object} responses.ErrorResponse "Internal server error"
-// @Router /users/roles [post]
+// @Router /admin/role/add [post]
 func AddRoleToUser(c *gin.Context) {
 	var input requests.AddRoleRequest
 
@@ -132,7 +132,7 @@ func AddRoleToUser(c *gin.Context) {
 // @Failure 400 {object} responses.ErrorResponse "Invalid input"
 // @Failure 404 {object} responses.ErrorResponse "User or role not found"
 // @Failure 500 {object} responses.ErrorResponse "Internal server error"
-// @Router /users/roles [delete]
+// @Router /admin/role/remove-from-user [delete]
 func RemoveRoleFromUser(c *gin.Context) {
 	var input requests.RemoveRoleRequest
 

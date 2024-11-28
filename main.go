@@ -2,6 +2,7 @@ package main
 
 import (
 	"blog-platform/database"
+	"blog-platform/middleware"
 	"blog-platform/routes"
 	"blog-platform/utils"
 	"log"
@@ -19,6 +20,8 @@ func main() {
 	utils.SeedRoles(database.DB)
 
 	router := routes.SetupRouter()
+
+	router.Use(middleware.CORSMiddleware())
 
 	err = router.Run(":8080")
 	if err != nil {

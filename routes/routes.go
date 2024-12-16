@@ -22,14 +22,13 @@ func SetupRouter() *gin.Engine {
 	}
 
 	postRoutes := router.Group("/posts")
-	postRoutes.Use(middleware.AuthMiddleware())
-	{
-		postRoutes.POST("/", controllers.CreatePost)
-		postRoutes.GET("/", controllers.GetPosts)
-		postRoutes.GET("/:post_id", controllers.GetPost)
-		postRoutes.PUT("/:post_id", controllers.UpdatePost)
-		postRoutes.DELETE("/:post_id", controllers.RemovePost)
-	}
+
+	postRoutes.GET("/", controllers.GetPosts)
+	postRoutes.GET("/:post_id", controllers.GetPost)
+
+	postRoutes.POST("/", middleware.AuthMiddleware(), controllers.CreatePost)
+	postRoutes.PUT("/:post_id", middleware.AuthMiddleware(), controllers.UpdatePost)
+	postRoutes.DELETE("/:post_id", middleware.AuthMiddleware(), controllers.RemovePost)
 
 	commentRoutes := router.Group("/comments")
 	commentRoutes.Use(middleware.AuthMiddleware())
